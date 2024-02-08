@@ -13,11 +13,3 @@ DB_URL = f"mysql+mysqlconnector://{db['user']}:{db['password']}@{db['host']}:{db
 
 engine = create_engine(DB_URL)
 db_session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-def get_db():
-    session = db_session()
-    try:
-        yield session
-    finally:
-        session.close()

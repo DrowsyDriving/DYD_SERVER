@@ -9,16 +9,30 @@ def alert():
     with db_session() as session:
         if request.method == "POST":  # 알람 저장
             info = request.get_json()
+            warning_level = session.query(
+                AlertInfo
+            ).order_by(
+                AlertInfo.id.desc()
+            ).where(
+                AlertInfo.car_number == str(info['car_number'])
+            ).first()
+
+            level = 1
+            if warning_level:
+                level = warning_level.warning_level % 3 + 1
+
             a = AlertInfo.create(
                 info['car_number'],
-                info['warning_level'],
+                level,
                 info['latitude'],
                 info['longitude'],
             )
+
             session.add(a)
             session.commit()
-            session.refresh(a)
-            return jsonify(info)
+
+            return str(a.warning_level)
+
         elif request.method == "GET":
             records = session.query(AlertInfo).order_by(AlertInfo.id.desc()).limit(4)
             result = list()
@@ -34,18 +48,3 @@ def alert():
                 )
             return result
         return {'error': '오류 발생'}
-
-
-@bp.route('/dummy', methods=['GET'])
-def dummy():
-    with db_session() as session:
-        for i in range(100):
-            a = AlertInfo.create(
-                car_number=f'{i}가{i}',
-                warning_level=i % 3 + 1,
-                latitude=i,
-                longitude=i,
-            )
-            session.add(a)
-        session.commit()
-        return {'dummy': "생성 완료"}

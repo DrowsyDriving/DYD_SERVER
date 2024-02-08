@@ -1,6 +1,5 @@
 from flask import Flask
-import login
-import alert
+from service import login, alert
 
 app = Flask(__name__)
 

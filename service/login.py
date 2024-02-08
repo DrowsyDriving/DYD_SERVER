@@ -14,7 +14,6 @@ def sign_up():
             area = AreaInfo.create(info['area'], info['areacode'])
             session.add(area)
             session.commit()
-            session.refresh(area)
             return jsonify(info)
         return {'error': '오류가 발생했습니다.'}
 
