@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>테스트</title>
+    <style>
+        ul {
+            list-style: none;
+        }
+  </style>
+</head>
+<body>
+    <h1>하이</h1>
+    <ul>
+        {% for result in results %}
+            <li>
+                차 번호 : {{result.car_number}} <br>
+                경고 단계 : {{result.warning_level}} <br>
+                위도 : {{result.latitude}} <br>
+                경도 : {{result.longitude}} <br>
+                시간 : {{result.occurrence_time}} <br>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

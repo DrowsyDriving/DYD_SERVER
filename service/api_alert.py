@@ -34,7 +34,7 @@ def show_alert():
                     'occurrence_time': record.occurrence_time,
                 }
             )
-        return results
+        return render_template('index.html', results=results)
     return {'error': "오류 발생"}
 
 
