@@ -1,18 +1,21 @@
-from flask import Blueprint
+from flask import Blueprint, request, session
 from database.model import AreaInfo
-from flask_request_validator import *
-
 bp = Blueprint("login", __name__)
 
 
-@bp.route('/login', methods=['GET', 'POST'], endpoint='login')
-@validate_params(
-    Param('area', JSON, str),
-    Param('areacode', JSON, str),
-)
-def login(valid: ValidRequest):
-    data = valid.get_json()
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    data = request.get_json()
     result = AreaInfo.query.filter_by(area=data['area'], areacode=data['areacode']).first()
     if not result:
-        return '아이디나 비밀번호가 잘못되었습니다.', 403
-    return {'area': result.area, 'areacode': result.areacode}, 200
+        return {"message": "로그인에 실패했습니다.", "success": False}, 401
+    session['area'] = data['area']
+    return {"message": "로그인에 성공했습니다.", "success": True}, 200
+
+
+@bp.route('/logout', methods=['GET'])
+def logout():
+    if request.method == "GET":
+        session.pop('area')
+        return {"message": "로그아웃에 성공했습니다."}, 200
+    return {"message": "로그아웃에 실패했습니다."}, 400

@@ -2,4 +2,3 @@ flask==3.0.0
 flask-migrate
 mysql-connector-python
 flask-sqlalchemy
-flask_request_validator

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request
 from database.model import db, AlertInfo
 bp = Blueprint('alert', __name__)
 
@@ -6,6 +6,8 @@ bp = Blueprint('alert', __name__)
 @bp.route('/save-alert', methods=["GET", "POST"])
 def save_alert():
     data = request.get_json()
+    if not data['car_number'] or not data['latitude'] or not data['longitude']:
+        return {"error": "정보가 잘못되었습니다."}, 400
     a = AlertInfo()
     a.car_number = data['car_number']
     a.latitude = data['latitude']
@@ -16,7 +18,7 @@ def save_alert():
         a.warning_level = level.warning_level % 3 + 1
     db.session.add(a)
     db.session.commit()
-    return str(a.warning_level)
+    return {"car_number": "차량 번호", "warning_level": "경고 단계"}, 201
 
 
 @bp.route('/show-alert', methods=["GET"])
@@ -34,8 +36,8 @@ def show_alert():
                     'occurrence_time': record.occurrence_time,
                 }
             )
-        return render_template('index.html', results=results)
-    return {'error': "오류 발생"}
+        return results, 200
+    return {'error': "정보를 찾을 수 없습니다."}, 404
 
 
 @bp.route('/dummy', methods=['GET'])
