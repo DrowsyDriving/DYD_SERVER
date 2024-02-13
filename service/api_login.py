@@ -1,6 +1,6 @@
 from flask import Blueprint, request, session
 from database.model import AreaInfo
-bp = Blueprint("login", __name__)
+bp = Blueprint("login", __name__, url_prefix='/users')
 
 
 @bp.route('/login', methods=['GET', 'POST'])

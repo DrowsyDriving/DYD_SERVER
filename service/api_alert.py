@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 from database.model import db, AlertInfo
-bp = Blueprint('alert', __name__)
+bp = Blueprint('alert', __name__, url_prefix='/alert')
 
 
-@bp.route('/save-alert', methods=["GET", "POST"])
+@bp.route('/save', methods=["GET", "POST"])
 def save_alert():
     data = request.get_json()
     if not data['car_number'] or not data['latitude'] or not data['longitude']:
@@ -21,7 +21,7 @@ def save_alert():
     return {"car_number": "차량 번호", "warning_level": "경고 단계"}, 201
 
 
-@bp.route('/show-alert', methods=["GET"])
+@bp.route('/show', methods=["GET"])
 def show_alert():
     if request.method == "GET":
         records = AlertInfo.query.order_by(AlertInfo.id.desc()).limit(4)
