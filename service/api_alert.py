@@ -5,20 +5,22 @@ bp = Blueprint('alert', __name__, url_prefix='/alert')
 
 @bp.route('/save', methods=["GET", "POST"])
 def save_alert():
-    data = request.get_json()
-    if not data['car_number'] or not data['latitude'] or not data['longitude']:
-        return {"error": "정보가 잘못되었습니다."}, 400
-    a = AlertInfo()
-    a.car_number = data['car_number']
-    a.latitude = data['latitude']
-    a.longitude = data['longitude']
-    a.warning_level = 1
-    level = AlertInfo.query.filter_by(car_number=data['car_number']).order_by(AlertInfo.id.desc()).first()
-    if level:
-        a.warning_level = level.warning_level % 3 + 1
-    db.session.add(a)
-    db.session.commit()
-    return {"car_number": "차량 번호", "warning_level": "경고 단계"}, 201
+    if request.method == "POST":
+        data = request.get_json()
+        if not data['car_number'] or not data['latitude'] or not data['longitude']:
+            return {"error": "정보가 잘못되었습니다."}, 400
+        a = AlertInfo()
+        a.car_number = data['car_number']
+        a.latitude = data['latitude']
+        a.longitude = data['longitude']
+        a.warning_level = 1
+        level = AlertInfo.query.filter_by(car_number=data['car_number']).order_by(AlertInfo.id.desc()).first()
+        if level:
+            a.warning_level = level.warning_level % 3 + 1
+        db.session.add(a)
+        db.session.commit()
+        return {"car_number": "차량 번호", "warning_level": "경고 단계"}, 201
+    return {"error": "오류가 발생했습니다."}, 400
 
 
 @bp.route('/show', methods=["GET"])
